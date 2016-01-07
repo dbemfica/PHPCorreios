@@ -11,7 +11,7 @@ $frete->setNVlComprimento(16);
 $frete->setNVlAltura(12);
 $frete->setNVlLargura(11);
 $frete->calculaDiametro();
-$frete->getURL();
+$frete->getFrete();
 
 echo "<pre>";
 var_dump($frete);

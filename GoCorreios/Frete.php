@@ -26,6 +26,20 @@ class Frete
     private $nVlValorDeclarado = 0;
     private $sCdAvisoRecebimento = "N";
 
+
+    /**
+    * Atributos retornados apos a conculta;
+    */
+    private $valor;
+    private $prazoEntrega;
+    private $valorMaoPropia;
+    private $valorAvisoRecebimento;
+    private $valorDeclarado;
+    private $entregaDomiciliar;
+    private $entregaSabado;
+    private $codigoErro;
+    private $msgErro;
+
     /**
     * @param string $nCdEmpresa
     * Seu código administrativo junto à ECT. O código está
@@ -226,6 +240,75 @@ class Frete
     */
     private $StrRetorno = "xml";
 
+
+    private function setValor($valor)
+    {
+        $valor = trim($valor);
+        $valor = str_replace(".","",$valor);
+        $valor = str_replace(",",".",$valor);
+        $this->valor = (float)$valor;
+    }
+
+    private function setPrazoEntrega($prazoEntrega)
+    {
+        $prazoEntrega = trim($prazoEntrega);
+        $this->prazoEntrega = (int)$prazoEntrega;
+    }
+
+    private function setValorMaoPropia($valorMaoPropia)
+    {
+        $valorMaoPropia = trim($valorMaoPropia);
+        $valorMaoPropia = str_replace(".","",$valorMaoPropia);
+        $valorMaoPropia = str_replace(",",".",$valorMaoPropia);
+        $this->valorMaoPropia = (float)$valorMaoPropia;
+    }
+
+    private function setValorAvisoRecebimento($valorAvisoRecebimento)
+    {
+        $valorAvisoRecebimento = trim($valorAvisoRecebimento);
+        $valorAvisoRecebimento = str_replace(".","",$valorAvisoRecebimento);
+        $valorAvisoRecebimento = str_replace(",",".",$valorAvisoRecebimento);
+        $this->valorAvisoRecebimento = (float)$valorAvisoRecebimento;
+    }
+
+    private function setValorDeclarado($valorDeclarado)
+    {
+        $valorDeclarado = trim($valorDeclarado);
+        $valorDeclarado = str_replace(".","",$valorDeclarado);
+        $valorDeclarado = str_replace(",",".",$valorDeclarado);
+        $this->valorDeclarado = (float)$valorDeclarado;
+    }
+
+    private function setEntregaDomiciliar($entregaDomiciliar)
+    {
+        $entregaDomiciliar = trim($entregaDomiciliar);
+        $this->entregaDomiciliar = (string)$entregaDomiciliar;
+    }
+
+    private function setEntregaSabado($entregaSabado)
+    {
+        $entregaSabado = trim($entregaSabado);
+        $this->entregaSabado = (string)$entregaSabado;
+    }
+
+    private function setCodigoErro($codigoErro)
+    {
+        $codigoErro = trim($codigoErro);
+        $this->codigoErro = (int)$codigoErro;
+    }
+
+    private function setMsgErro($msgErro)
+    {
+        $msgErro = trim($msgErro);
+        $this->msgErro = (string)$msgErro;
+    }
+
+
+
+
+
+
+
     /**
     * Monta a URL de Consulta para enviar ao webservice dos correios
     * @return string
@@ -249,7 +332,6 @@ class Frete
         $url .= "nVlValorDeclarado={$this->nVlValorDeclarado}&";
         $url .= "sCdAvisoRecebimento={$this->sCdAvisoRecebimento}&";
         $url .= "StrRetorno={$this->StrRetorno}&";
-        $this->url = $url;
         return $url;
     }
 
@@ -258,7 +340,7 @@ class Frete
     * @param string $url URL do site que se deseja obter os dados
     * @return mixed Dados retornados pela URL
     */
-    private function _getSite($url)
+    private function getSite()
     {
         $url = $this->getURL();
         $curl_init = curl_init();
@@ -277,21 +359,19 @@ class Frete
     */
     public function getFrete()
     {
-        $response = $this->_getSite(self::_getURL());
-
+        $response = $this->getSite();
         $xml = simplexml_load_string($response);
 
-        $frete = array("servico_codigo" => $xml->cServico->Codigo,
-            "valor" => $xml->cServico->Valor,
-            "prazo_entrega" => $xml->cServico->PrazoEntrega,
-            "mao_propria" => $xml->cServico->ValorMaoPropria,
-            "aviso_recebimento" => $xml->cServico->ValorAvisoRecebimento,
-            "valor_declarado" => $xml->cServico->ValorValorDeclarado,
-            "en_domiciliar" => $xml->cServico->EntregaDomiciliar,
-            "en_sabado" => $xml->cServico->EntregaSabado,
-            "erro" => $xml->cServico->Erro,
-            "msg_erro" => $xml->cServico->MsgErro);
+        $this->setValor($xml->cServico->Valor);
+        $this->setPrazoEntrega($xml->cServico->PrazoEntrega);
+        $this->setValorMaoPropia($xml->cServico->ValorMaoPropria);
+        $this->setValorAvisoRecebimento($xml->cServico->ValorAvisoRecebimento);
+        $this->setNVlValorDeclarado($xml->cServico->ValorValorDeclarado);
+        $this->setEntregaDomiciliar($xml->cServico->EntregaDomiciliar);
+        $this->setEntregaSabado($xml->cServico->EntregaSabado);
+        $this->setCodigoErro($xml->cServico->Erro);
+        $this->setMsgErro($xml->cServico->MsgErro);
 
-        return $frete;
+        return true;
     }
 }
