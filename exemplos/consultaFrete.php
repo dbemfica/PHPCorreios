@@ -11,9 +11,6 @@ $frete->setNVlComprimento(16);
 $frete->setNVlAltura(12);
 $frete->setNVlLargura(11);
 $frete->calculaDiametro();
-$frete->getFrete();
+$frete->calculaFrete();
 
-echo "<pre>";
-var_dump($frete);
-//var_dump($result);
-echo "</pre>";
+echo "O prazo de entrega é de {$frete->getPrazoEntrega()} dia(s) e o valor é R$ ".number_format($frete->getValor(),2,",",".");

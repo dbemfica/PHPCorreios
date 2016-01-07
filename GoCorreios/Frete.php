@@ -303,11 +303,86 @@ class Frete
         $this->msgErro = (string)$msgErro;
     }
 
+    /**
+    * @return float
+    * Preço total da encomenda, em Reais, incluindo os preços dos serviços opcionais.
+    */
+    public function getValor()
+    {
+        return $this->valor;
+    }
 
+    /**
+    * @return int
+    * Prazo estimado em dias para entrega do produto.
+    */
+    public function getPrazoEntrega()
+    {
+        return $this->prazoEntrega;
+    }
 
+    /**
+    * @return float
+    * Preço do serviço adicional Mão Própria.
+    */
+    public function getValorMaoPropia()
+    {
+        return $this->valorMaoPropia;
+    }
 
+    /**
+    * @return float
+    * Preço do serviço adicional Aviso de Recebimento.
+    */
+    public function getValorAvisoRecebimento()
+    {
+        return $this->valorAvisoRecebimento;
+    }
 
+    /**
+    * @return float
+    * Preço do serviço adicional Valor Declarado.
+    */
+    public function getValorDeclarado()
+    {
+        return $this->valorDeclarado;
+    }
 
+    /**
+    * @return string
+    * Informa se a localidade informada possui entrega domiciliária 'S' ou 'N'.
+    */
+    public function getEntregaDomiciliar()
+    {
+        return $this->entregaDomiciliar;
+    }
+
+    /**
+    * @return string
+    * Informa se a localidade informada possui entrega domiciliária aos sábados 'S' ou 'N';
+    */
+    public function getEntregaSabado()
+    {
+        return $this->entregaSabado;
+    }
+
+    /**
+    * @return int
+    * Códigos de Erros retornados pelo calculado.
+    */
+    public function getCodigoErro()
+    {
+        return $this->codigoErro;
+    }
+
+    /**
+    * @return string
+    * Retorna a descrição do erro gerado.
+    */
+    public function getMsgErro()
+    {
+        return $this->msgErro;
+    }
 
     /**
     * Monta a URL de Consulta para enviar ao webservice dos correios
@@ -357,7 +432,7 @@ class Frete
     * Comunica-se com os correios para obter os valores do frete
     * @return array
     */
-    public function getFrete()
+    public function calculaFrete()
     {
         $response = $this->getSite();
         $xml = simplexml_load_string($response);
@@ -371,6 +446,10 @@ class Frete
         $this->setEntregaSabado($xml->cServico->EntregaSabado);
         $this->setCodigoErro($xml->cServico->Erro);
         $this->setMsgErro($xml->cServico->MsgErro);
+
+        if( $this->getCodigoErro() == 7 ){
+            trigger_error("Serviço indisponível, tente mais tarde", E_USER_NOTICE);
+        }
 
         return true;
     }
