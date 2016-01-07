@@ -10,7 +10,8 @@ $frete->setNCdFormato(1);
 $frete->setNVlComprimento(16);
 $frete->setNVlAltura(12);
 $frete->setNVlLargura(11);
-//$result = $frete->getFrete();
+$frete->calculaDiametro();
+$frete->getURL();
 
 echo "<pre>";
 var_dump($frete);

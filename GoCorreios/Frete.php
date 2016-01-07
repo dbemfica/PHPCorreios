@@ -4,13 +4,13 @@ namespace GoCorreios;
 class Frete
 {
     /**
-     * endereço do webservice dos correios
-     */
-    private $_ect = "http://ws.correios.com.br/calculador/CalcPrecoPrazo.aspx";
+    * endereço do webservice dos correios
+    */
+    private $ect = "http://ws.correios.com.br/calculador/CalcPrecoPrazo.aspx";
 
     /**
-     * Parametros para calcular o Frete
-     */
+    * Parametros para calcular o Frete
+    */
     private $nCdEmpresa;
     private $sDsSenha;
     private $nCdServico;
@@ -168,6 +168,14 @@ class Frete
     */
     public function setNVlDiametro($nVlDiametro)
     {
+        $this->nVlDiametro = (float)$nVlDiametro;
+    }
+
+    /**
+    * Calcula o diâmetro da encomenda em cm
+    */
+    public function calculaDiametro()
+    {
         $this->nVlDiametro = $this->nVlAltura + $this->nVlLargura;
     }
 
@@ -211,20 +219,38 @@ class Frete
     }
 
     /**
+    * Indica a forma de retorno da consulta.
+    * XML: Resultado em XML
+    * Popup:  Resultado em uma janela popup
+    * <URL>: Resultado via post em uma página do requisitante
+    */
+    private $StrRetorno = "xml";
+
+    /**
     * Monta a URL de Consulta para enviar ao webservice dos correios
     * @return string
     */
-    private function _getURL()
+    private function getURL()
     {
-        $url = $this->_ect . '?';
-        foreach ($this as $name => $var) {
-            if ($name == 'ect') {
-                continue;
-            }
-            $url .= "$name=$var&";
-        }
+        $url = $this->ect . '?';
+        $url .= "_ect={$this->ect}&";
+        $url .= "nCdEmpresa={$this->nCdEmpresa}&";
+        $url .= "sDsSenha={$this->sDsSenha}&";
+        $url .= "nCdServico={$this->nCdServico}&";
+        $url .= "sCepOrigem={$this->sCepOrigem}&";
+        $url .= "sCepDestino={$this->sCepDestino}&";
+        $url .= "nVlPeso={$this->nVlPeso}&";
+        $url .= "nCdFormato={$this->nCdFormato}&";
+        $url .= "nVlComprimento={$this->nVlComprimento}&";
+        $url .= "nVlAltura={$this->nVlAltura}&";
+        $url .= "nVlLargura={$this->nVlLargura}&";
+        $url .= "nVlDiametro={$this->nVlDiametro}&";
+        $url .= "sCdMaoPropria={$this->sCdMaoPropria}&";
+        $url .= "nVlValorDeclarado={$this->nVlValorDeclarado}&";
+        $url .= "sCdAvisoRecebimento={$this->sCdAvisoRecebimento}&";
+        $url .= "StrRetorno={$this->StrRetorno}&";
         $this->url = $url;
-        return $this->url;
+        return $url;
     }
 
     /**
@@ -234,6 +260,7 @@ class Frete
     */
     private function _getSite($url)
     {
+        $url = $this->getURL();
         $curl_init = curl_init();
         curl_setopt($curl_init, CURLOPT_URL, $url);
         curl_setopt($curl_init, CURLOPT_SSL_VERIFYPEER, 0);
