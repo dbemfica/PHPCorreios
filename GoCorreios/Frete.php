@@ -168,7 +168,7 @@ class Frete
     */
     public function setNVlDiametro($nVlDiametro)
     {
-        $this->nVlDiametro = (float)$nVlDiametro;
+        $this->nVlDiametro = $this->nVlAltura + $this->nVlLargura;
     }
 
     /**
@@ -216,7 +216,6 @@ class Frete
     */
     private function _getURL()
     {
-
         $url = $this->_ect . '?';
         foreach ($this as $name => $var) {
             if ($name == 'ect') {
@@ -224,9 +223,48 @@ class Frete
             }
             $url .= "$name=$var&";
         }
-
         $this->url = $url;
-
         return $this->url;
+    }
+
+    /**
+    * Obtém dados de uma url via curl
+    * @param string $url URL do site que se deseja obter os dados
+    * @return mixed Dados retornados pela URL
+    */
+    private function _getSite($url)
+    {
+        $curl_init = curl_init();
+        curl_setopt($curl_init, CURLOPT_URL, $url);
+        curl_setopt($curl_init, CURLOPT_SSL_VERIFYPEER, 0);
+        ob_start();
+        curl_exec($curl_init);
+        $response = ob_get_contents();
+        ob_end_clean();
+        return $response;
+    }
+
+    /**
+    * Comunica-se com os correios para obter os valores do frete
+    * @return array
+    */
+    public function getFrete()
+    {
+        $response = $this->_getSite(self::_getURL());
+
+        $xml = simplexml_load_string($response);
+
+        $frete = array("servico_codigo" => $xml->cServico->Codigo,
+            "valor" => $xml->cServico->Valor,
+            "prazo_entrega" => $xml->cServico->PrazoEntrega,
+            "mao_propria" => $xml->cServico->ValorMaoPropria,
+            "aviso_recebimento" => $xml->cServico->ValorAvisoRecebimento,
+            "valor_declarado" => $xml->cServico->ValorValorDeclarado,
+            "en_domiciliar" => $xml->cServico->EntregaDomiciliar,
+            "en_sabado" => $xml->cServico->EntregaSabado,
+            "erro" => $xml->cServico->Erro,
+            "msg_erro" => $xml->cServico->MsgErro);
+
+        return $frete;
     }
 }
