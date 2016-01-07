@@ -5,9 +5,16 @@ Correios PHP
 
 Objetivo
 -----
-Esta classe faz a comunicação com o webservice dos correios para cálculo de frete por SEDEX e PAC
+Esta classe faz a comunicaï¿½ï¿½o com o webservice dos correios para cï¿½lculo de frete por SEDEX e PAC
 
-Documentação
+DependÃªncias
+-------
+* [Apache](http://httpd.apache.org/) / [Nginx](http://nginx.org/)
+* [PHP 5.3+](http://php.net)
+* ExtensÃµes PHP
+ * [cURL](http://br2.php.net/manual/book.curl.php)
+
+Documentaï¿½ï¿½o
 -----
 Baseado no manual disponibilizado pelos Correios
 * [Manual dos Correios](http://www.correios.com.br/para-voce/correios-de-a-a-z/pdf/calculador-remoto-de-precos-e-prazos/manual-de-implementacao-do-calculo-remoto-de-precos-e-prazos)
