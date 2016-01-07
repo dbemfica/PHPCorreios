@@ -21,10 +21,10 @@ class Frete
     private $nVlComprimento;
     private $nVlAltura;
     private $nVlLargura;
-    private $nVlDiametro;
-    private $sCdMaoPropria;
-    private $nVlValorDeclarado;
-    private $sCdAvisoRecebimento;
+    private $nVlDiametro = "";
+    private $sCdMaoPropria = "N";
+    private $nVlValorDeclarado = 0;
+    private $sCdAvisoRecebimento = "N";
 
     /**
     * @param string $nCdEmpresa
@@ -74,92 +74,159 @@ class Frete
     }
 
     /**
-     * @param mixed $sCepOrigem
-     */
+    * @param string $sCepOrigem
+    * CEP de Origem
+    */
     public function setSCepOrigem($sCepOrigem)
     {
+        $sCepOrigem = str_replace("-","",$sCepOrigem);
+        if( strlen($sCepOrigem) != 8 ){
+            trigger_error("O CEP informado é invalido", E_USER_ERROR);
+        }
         $this->sCepOrigem = $sCepOrigem;
     }
 
     /**
-     * @param mixed $sCepDestino
-     */
+    * @param string $sCepDestino
+    * CEP de Destino
+    */
     public function setSCepDestino($sCepDestino)
     {
+        $sCepDestino = str_replace("-","",$sCepDestino);
+        if( strlen($sCepDestino) != 8 ){
+            trigger_error("O CEP informado é invalido", E_USER_ERROR);
+        }
         $this->sCepDestino = $sCepDestino;
     }
 
     /**
-     * @param mixed $nVlPeso
-     */
+    * @param float $nVlPeso
+    * Peso da encomenda, incluindo sua embalagem. O peso deve ser informado
+    * em quilogramas. Se o formato for Envelope, o valor máximo permitido será 1 kg
+    */
     public function setNVlPeso($nVlPeso)
     {
         $this->nVlPeso = $nVlPeso;
     }
 
     /**
-     * @param mixed $nCdFormato
-     */
+    * @param int $nCdFormato
+    * Formato da encomenda (incluindo embalagem).
+    * 1 – Formato caixa/pacote
+    * 2 – Formato rolo/prisma
+    * 3 - Envelope
+    */
     public function setNCdFormato($nCdFormato)
     {
         $this->nCdFormato = $nCdFormato;
+
+        $nCdFormato = trim($nCdFormato);
+
+        $array = array(1,2,3);
+        if( in_array($nCdFormato, $array) ){
+            $this->nCdFormato = (int)$nCdFormato;
+        }else{
+            trigger_error("O Código do Formato não é um dos valores validos", E_USER_ERROR);
+        }
     }
 
     /**
-     * @param mixed $nVlComprimento
-     */
+    * @param float $nVlComprimento
+    * Comprimento da encomenda (incluindo embalagem),em centímetros.
+    */
     public function setNVlComprimento($nVlComprimento)
     {
-        $this->nVlComprimento = $nVlComprimento;
+        $this->nVlComprimento = (float)$nVlComprimento;
     }
 
     /**
-     * @param mixed $nVlAltura
-     */
+    * @param float $nVlAltura
+    * Altura da encomenda (incluindo embalagem), em centímetros.
+    * Se o formato for envelope, informar zero(0).
+    */
     public function setNVlAltura($nVlAltura)
     {
-        $this->nVlAltura = $nVlAltura;
+        if( $this->nCdFormato == 3 ) {
+            $this->nVlAltura = 0;
+        }else{
+            $this->nVlAltura = (float)$nVlAltura;
+        }
     }
 
     /**
-     * @param mixed $nVlLargura
-     */
+    * @param float $nVlLargura
+    * Largura da encomenda (incluindo embalagem), em centímetros.
+    */
     public function setNVlLargura($nVlLargura)
     {
-        $this->nVlLargura = $nVlLargura;
+        $this->nVlLargura = (float)$nVlLargura;
     }
 
     /**
-     * @param mixed $nVlDiametro
-     */
+    * @param float $nVlDiametro
+    * Diâmetro da encomenda (incluindo embalagem), em centímetros
+    */
     public function setNVlDiametro($nVlDiametro)
     {
-        $this->nVlDiametro = $nVlDiametro;
+        $this->nVlDiametro = (float)$nVlDiametro;
     }
 
     /**
-     * @param mixed $sCdMaoPropria
-     */
+    * @param string $sCdMaoPropria
+    * Indica se a encomenda será entregue com o serviço adicional mão própria.
+    * Valores possíveis: S ou N (S – Sim, N – Não)
+    */
     public function setSCdMaoPropria($sCdMaoPropria)
     {
-        $this->sCdMaoPropria = $sCdMaoPropria;
+        if( $sCdMaoPropria == "S" || $sCdMaoPropria == "N" ){
+            $this->sCdMaoPropria = trim(strtolower($sCdMaoPropria));
+        }else{
+            trigger_error("Valor passado tem que 'S' ou 'N'", E_USER_ERROR);
+        }
+
     }
 
     /**
-     * @param mixed $nVlValorDeclarado
-     */
+    * @param float $nVlValorDeclarado
+    * Indica se a encomenda será entregue com o serviço adicional valor declarado.
+    * Neste campo deve ser apresentado o valor declarado desejado, em Reais.
+    */
     public function setNVlValorDeclarado($nVlValorDeclarado)
     {
-        $this->nVlValorDeclarado = $nVlValorDeclarado;
+        $this->nVlValorDeclarado = (float)$nVlValorDeclarado;
     }
 
     /**
-     * @param mixed $sCdAvisoRecebimento
-     */
+    * @param mixed $sCdAvisoRecebimento
+    * Indica se a encomenda será entregue com o serviço adicional aviso de recebimento.
+    * Valores possíveis: S ou N (S – Sim, N – Não)
+    */
     public function setSCdAvisoRecebimento($sCdAvisoRecebimento)
     {
-        $this->sCdAvisoRecebimento = $sCdAvisoRecebimento;
+        if( $sCdAvisoRecebimento == "S" || $sCdAvisoRecebimento == "N" ){
+            $this->sCdAvisoRecebimento = trim(strtolower($sCdAvisoRecebimento));
+        }else{
+            trigger_error("Valor passado tem que 'S' ou 'N'", E_USER_ERROR);
+        }
     }
 
+    /**
+    * Monta a URL de Consulta para enviar ao webservice dos correios
+    * @return string
+    */
+    private function _getURL()
+    {
 
+        $url = $this->_ect . '?';
+        foreach ($this as $name => $var) {
+            if ($name == 'ect') {
+                continue;
+            }
+            $url .= "$name=$var&";
+        }
+
+        $this->url = $url;
+
+        return $this->url;
+    }
 }
