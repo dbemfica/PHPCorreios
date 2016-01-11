@@ -146,7 +146,7 @@ class Frete
         $msgErro = trim($msgErro);
         $this->msgErro = (string)$msgErro;
     }
-    
+
     public function setNVlValorDeclarado($nVlValorDeclarado)
     {
         $this->nVlValorDeclarado = (float)$nVlValorDeclarado;
@@ -264,11 +264,12 @@ class Frete
     }
 
     /**
-    * Monta a URL de Consulta para enviar ao webservice dos correios
-    * @return string
+    * Comunica-se com os correios para obter os valores do frete
+    * @return array
     */
-    public function getURL()
+    public function calculaFrete()
     {
+        //MONTA A URL
         $url = self::WS . '?';
         $url .= "_ect=".self::WS."&";
         $url .= "nCdEmpresa={$this->codigoEmpresa}&";
@@ -286,17 +287,9 @@ class Frete
         $url .= "nVlValorDeclarado={$this->pacote->getValorDeclarado()}&";
         $url .= "sCdAvisoRecebimento={$this->pacote->getAvisoRecebimento()}&";
         $url .= "StrRetorno={$this->StrRetorno}&";
-        return $url;
-    }
 
-    /**
-    * Obtém dados de uma url via curl
-    * @param string $url URL do site que se deseja obter os dados
-    * @return mixed Dados retornados pela URL
-    */
-    private function getSite()
-    {
-        $url = $this->getURL();
+
+        //EXECULTA O CURL
         $curl_init = curl_init();
         curl_setopt($curl_init, CURLOPT_URL, $url);
         curl_setopt($curl_init, CURLOPT_SSL_VERIFYPEER, 0);
@@ -304,17 +297,11 @@ class Frete
         curl_exec($curl_init);
         $response = ob_get_contents();
         ob_end_clean();
-        return $response;
-    }
 
-    /**
-    * Comunica-se com os correios para obter os valores do frete
-    * @return array
-    */
-    public function calculaFrete()
-    {
-        $response = $this->getSite();
         $xml = simplexml_load_string($response);
+        if( (int)$xml->cServico->Erro != 0 ){
+            return (string)$xml->cServico->MsgErro;
+        }
 
         $this->setValor($xml->cServico->Valor);
         $this->setPrazoEntrega($xml->cServico->PrazoEntrega);
@@ -323,12 +310,6 @@ class Frete
         $this->setNVlValorDeclarado($xml->cServico->ValorValorDeclarado);
         $this->setEntregaDomiciliar($xml->cServico->EntregaDomiciliar);
         $this->setEntregaSabado($xml->cServico->EntregaSabado);
-        $this->setCodigoErro($xml->cServico->Erro);
-        $this->setMsgErro($xml->cServico->MsgErro);
-
-        if( $this->getCodigoErro() == 7 ){
-            trigger_error("Serviço indisponível, tente mais tarde", E_USER_NOTICE);
-        }
 
         return true;
     }

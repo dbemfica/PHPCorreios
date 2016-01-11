@@ -24,7 +24,7 @@ $frete->addEnderecoOrigem($enderecoOrigem);
 $frete->addEnderecoDestino($enderecoDestino);
 $frete->addPacote($pacote);
 
-$frete->calculaFrete();
+var_dump($frete->calculaFrete());
 
 echo "<pre>";
 print_r($frete);
