@@ -10,6 +10,9 @@ class Pacote
     private $altura;
     private $largura;
     private $diametro;
+    private $maoPropria;
+    private $valorDeclarado;
+    private $avisoRecebimento;
 
     /**
     * @return int
@@ -87,6 +90,9 @@ class Pacote
     */
     public function setAltura($altura)
     {
+        if( is_numeric($altura) ){
+            trigger_error("O valor deve ser Int ou Float", E_USER_ERROR);
+        }
         if( $this->codigoFormato == 3 ) {
             $this->altura = 0;
         }else{
@@ -108,12 +114,15 @@ class Pacote
     */
     public function setLargura($largura)
     {
+        if( is_numeric($largura) ){
+            trigger_error("O valor deve ser Int ou Float", E_USER_ERROR);
+        }
         $this->largura = (float)$largura;
     }
 
     /**
-     * @return float
-     */
+    * @return float
+    */
     public function getDiametro()
     {
         return $this->diametro;
@@ -127,9 +136,81 @@ class Pacote
     public function setDiametro($diametro = null)
     {
         if( $diametro !== NULL ){
+            if( is_numeric($diametro) ){
+                trigger_error("O valor deve ser Int ou Float", E_USER_ERROR);
+            }
             $this->diametro = (float)$diametro;
         }else{
             $this->diametro = $this->altura + $this->largura;
+        }
+    }
+
+    /**
+    * @return string
+    */
+    public function getMaoPropria()
+    {
+        return $this->maoPropria;
+    }
+
+    /**
+    * @return string
+    * Indica se a encomenda será entregue com o serviço adicional mão própria.
+    * Valores possíveis: S ou N (S – Sim, N – Não)
+    */
+    public function setMaoPropria($maoPropria)
+    {
+        $maoPropria = trim($maoPropria);
+        $array = array('S','N');
+        if( in_array($maoPropria, $array) ){
+            $this->maoPropria = (string)$maoPropria;
+        }else{
+            trigger_error("O valor não é um dos valores validos", E_USER_ERROR);
+        }
+    }
+
+    /**
+    * @return float
+    */
+    public function getValorDeclarado()
+    {
+        return $this->valorDeclarado;
+    }
+
+    /**
+    * @param float
+    * Indica se a encomenda será entregue com o serviço adicional valor declarado.
+    * Neste campo deve ser apresentado o valor declarado desejado, em Reais.
+    */
+    public function setValorDeclarado($valorDeclarado)
+    {
+        if( is_numeric($valorDeclarado) ){
+            trigger_error("O valor deve ser Int ou Float", E_USER_ERROR);
+        }
+        $this->valorDeclarado = (float)$valorDeclarado;
+    }
+
+    /**
+    * @return string
+    */
+    public function getAvisoRecebimento()
+    {
+        return $this->avisoRecebimento;
+    }
+
+    /**
+    * @return string
+    * Indica se a encomenda será entregue com o serviço adicional aviso de recebimento.
+    * Valores possíveis: S ou N (S – Sim, N – Não)
+    */
+    public function setAvisoRecebimento($avisoRecebimento)
+    {
+        $avisoRecebimento = trim($avisoRecebimento);
+        $array = array('S','N');
+        if( in_array($avisoRecebimento, $array) ){
+            $this->avisoRecebimento = (string)$avisoRecebimento;
+        }else{
+            trigger_error("O valor não é um dos valores validos", E_USER_ERROR);
         }
     }
 }

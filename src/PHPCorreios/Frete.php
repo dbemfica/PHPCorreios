@@ -77,45 +77,6 @@ class Frete
     }
 
     /**
-    * @param string $sCdMaoPropria
-    * Indica se a encomenda será entregue com o serviço adicional mão própria.
-    * Valores possíveis: S ou N (S – Sim, N – Não)
-    */
-    public function setSCdMaoPropria($sCdMaoPropria)
-    {
-        if( $sCdMaoPropria == "S" || $sCdMaoPropria == "N" ){
-            $this->sCdMaoPropria = trim(strtolower($sCdMaoPropria));
-        }else{
-            trigger_error("Valor passado tem que 'S' ou 'N'", E_USER_ERROR);
-        }
-
-    }
-
-    /**
-    * @param float $nVlValorDeclarado
-    * Indica se a encomenda será entregue com o serviço adicional valor declarado.
-    * Neste campo deve ser apresentado o valor declarado desejado, em Reais.
-    */
-    public function setNVlValorDeclarado($nVlValorDeclarado)
-    {
-        $this->nVlValorDeclarado = (float)$nVlValorDeclarado;
-    }
-
-    /**
-    * @param mixed $sCdAvisoRecebimento
-    * Indica se a encomenda será entregue com o serviço adicional aviso de recebimento.
-    * Valores possíveis: S ou N (S – Sim, N – Não)
-    */
-    public function setSCdAvisoRecebimento($sCdAvisoRecebimento)
-    {
-        if( $sCdAvisoRecebimento == "S" || $sCdAvisoRecebimento == "N" ){
-            $this->sCdAvisoRecebimento = trim(strtolower($sCdAvisoRecebimento));
-        }else{
-            trigger_error("Valor passado tem que 'S' ou 'N'", E_USER_ERROR);
-        }
-    }
-
-    /**
     * Indica a forma de retorno da consulta.
     * XML: Resultado em XML
     * Popup:  Resultado em uma janela popup
