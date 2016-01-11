@@ -12,54 +12,54 @@ class Endereco
     private $uf;
 
     /**
-     * Endereço
-     * @return string
-     */
+    * Endereço
+    * @return string
+    */
     public function getEndereco()
     {
         return $this->endereco;
     }
 
     /**
-     * Endereço
-     * @param string
-     */
+    * Endereço
+    * @param string
+    */
     public function setEndereco($endereco)
     {
         $this->endereco = (string)trim($endereco);
     }
 
     /**
-     * Número
-     * @return inteiro
-     */
+    * Número
+    * @return inteiro
+    */
     public function getNumero()
     {
         return $this->numero;
     }
 
     /**
-     * Número
-     * @param inteiro
-     */
+    * Número
+    * @param inteiro
+    */
     public function setNumero($numero)
     {
         $this->numero = (int)trim($numero);
     }
 
     /**
-     * CEP
-     * @return string
-     */
+    * CEP
+    * @return string
+    */
     public function getCep()
     {
         return $this->cep;
     }
 
     /**
-     * CEP
-     * @param mixed CEP
-     */
+    * CEP
+    * @param mixed CEP
+    */
     public function setCep($cep)
     {
         $cep = str_replace("-","",$cep);
@@ -70,54 +70,54 @@ class Endereco
     }
 
     /**
-     * Bairro
-     * @return string
-     */
+    * Bairro
+    * @return string
+    */
     public function getBairro()
     {
         return $this->bairro;
     }
 
     /**
-     * Bairro
-     * @param string
-     */
+    * Bairro
+    * @param string
+    */
     public function setBairro($bairro)
     {
         $this->bairro = (string)trim($bairro);
     }
 
     /**
-     * O código IBGE da Cidade
-     * @return inteiro
-     */
+    * O código IBGE da Cidade
+    * @return inteiro
+    */
     public function getCodCidadade()
     {
         return $this->codCidadade;
     }
 
     /**
-     * 'O código IBGE da Cidade'
-     * @param inteiro
-     */
+    * 'O código IBGE da Cidade'
+    * @param inteiro
+    */
     public function setCodCidadade($codCidadade)
     {
         $this->codCidadade = (int)trim($codCidadade);
     }
 
     /**
-     * UF do Estado
-     * @return string
-     */
+    * UF do Estado
+    * @return string
+    */
     public function getUf()
     {
         return $this->uf;
     }
 
     /**
-     * UF do Estado
-     * @param string
-     */
+    * UF do Estado
+    * @param string
+    */
     public function setUf($uf)
     {
         $this->uf = $uf;

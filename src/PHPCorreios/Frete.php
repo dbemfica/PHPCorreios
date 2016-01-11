@@ -3,16 +3,17 @@ namespace PHPCorreios;
 
 class Frete
 {
-    /**
-    * endereço do webservice dos correios
-    */
-    private $ect = "http://ws.correios.com.br/calculador/CalcPrecoPrazo.aspx";
+    //endereço do webservice dos correios
+    const WS = "http://ws.correios.com.br/calculador/CalcPrecoPrazo.aspx";
 
     /**
     * Parametros para calcular o Frete
     */
-    private $cep_origin;
-    private $cep_destino;
+    private $codigoEmpresa;
+    private $senhaEmpresa;
+    private $enderecoOrigem;
+    private $enderecoDestino;
+    private $pacote;
 
 
     /**
@@ -29,24 +30,24 @@ class Frete
     private $msgErro;
 
     /**
-    * @param string $nCdEmpresa
+    * @param string
     * Seu código administrativo junto à ECT. O código está
     * disponível no corpo do contrato firmado com os Correios.
     */
-    public function setNCdEmpresa($nCdEmpresa)
+    public function setCodigoEmpresa($codigoEmpresa)
     {
-        $this->nCdEmpresa = $nCdEmpresa;
+        $this->codigoEmpresa = $codigoEmpresa;
     }
 
     /**
-    * @param string $sDsSenha
+    * @param string
     * Senha para acesso ao serviço, associada ao seu código administrativo.
     * A senha inicial corresponde aos 8 primeiros dígitos do CNPJ informado
     * no contrato. A qualquer momento, é possível alterar a senha no endereço
     */
-    public function setSDsSenha($sDsSenha)
+    public function setSenhaEmpresa($senhaEmpresa)
     {
-        $this->sDsSenha = $sDsSenha;
+        $this->senhaEmpresa = $senhaEmpresa;
     }
 
     /**
@@ -73,86 +74,6 @@ class Frete
         }else{
             trigger_error("O Código de seriviço não é um dos valores validos", E_USER_ERROR);
         }
-    }
-
-    /**
-    * @param float $nVlPeso
-    * Peso da encomenda, incluindo sua embalagem. O peso deve ser informado
-    * em quilogramas. Se o formato for Envelope, o valor máximo permitido será 1 kg
-    */
-    public function setNVlPeso($nVlPeso)
-    {
-        $this->nVlPeso = $nVlPeso;
-    }
-
-    /**
-    * @param int $nCdFormato
-    * Formato da encomenda (incluindo embalagem).
-    * 1 – Formato caixa/pacote
-    * 2 – Formato rolo/prisma
-    * 3 - Envelope
-    */
-    public function setNCdFormato($nCdFormato)
-    {
-        $this->nCdFormato = $nCdFormato;
-
-        $nCdFormato = trim($nCdFormato);
-
-        $array = array(1,2,3);
-        if( in_array($nCdFormato, $array) ){
-            $this->nCdFormato = (int)$nCdFormato;
-        }else{
-            trigger_error("O Código do Formato não é um dos valores validos", E_USER_ERROR);
-        }
-    }
-
-    /**
-    * @param float $nVlComprimento
-    * Comprimento da encomenda (incluindo embalagem),em centímetros.
-    */
-    public function setNVlComprimento($nVlComprimento)
-    {
-        $this->nVlComprimento = (float)$nVlComprimento;
-    }
-
-    /**
-    * @param float $nVlAltura
-    * Altura da encomenda (incluindo embalagem), em centímetros.
-    * Se o formato for envelope, informar zero(0).
-    */
-    public function setNVlAltura($nVlAltura)
-    {
-        if( $this->nCdFormato == 3 ) {
-            $this->nVlAltura = 0;
-        }else{
-            $this->nVlAltura = (float)$nVlAltura;
-        }
-    }
-
-    /**
-    * @param float $nVlLargura
-    * Largura da encomenda (incluindo embalagem), em centímetros.
-    */
-    public function setNVlLargura($nVlLargura)
-    {
-        $this->nVlLargura = (float)$nVlLargura;
-    }
-
-    /**
-    * @param float $nVlDiametro
-    * Diâmetro da encomenda (incluindo embalagem), em centímetros
-    */
-    public function setNVlDiametro($nVlDiametro)
-    {
-        $this->nVlDiametro = (float)$nVlDiametro;
-    }
-
-    /**
-    * Calcula o diâmetro da encomenda em cm
-    */
-    public function calculaDiametro()
-    {
-        $this->nVlDiametro = $this->nVlAltura + $this->nVlLargura;
     }
 
     /**
@@ -346,40 +267,61 @@ class Frete
         return $this->msgErro;
     }
 
-
-    public function addEnderecoOrigin(\PHPCorreios\Endereco $endereco)
+    /**
+    * Método utilizado para armazenar o endereço de origem
+    * @param \PHPCorreios\Endereco $endereco Para armazenar um endereco com sucesso é necessário
+    * enviar um objeto do tipo Endereco
+    */
+    public function addEnderecoOrigem(\PHPCorreios\Endereco $endereco)
     {
-        $this->cep_origin = $endereco->getCep();
+        $this->enderecoOrigem = $endereco;
     }
 
+    /**
+    * Método utilizado para armazenar o endereço de destino
+    * @param \PHPCorreios\Endereco $endereco Para armazenar um endereco com sucesso é necessário
+    * enviar um objeto do tipo Endereco
+    */
     public function addEnderecoDestino(\PHPCorreios\Endereco $endereco)
     {
-        $this->cep_destino = $endereco->getCep();
+        $this->enderecoDestino = $endereco;
+    }
+
+    /**
+    * Método utilizado para armazenar um pacote
+    * @param \PHPCorreios\Pacote $pacote Para armazenar um pacote com sucesso é necessário
+    * enviar um objeto do tipo Pacote
+    */
+    public function addPacote(\PHPCorreios\Pacote $pacote)
+    {
+        $this->pacote = $pacote;
     }
 
     /**
     * Monta a URL de Consulta para enviar ao webservice dos correios
     * @return string
     */
-    private function getURL()
+    public function getURL()
     {
-        $url = $this->ect . '?';
-        $url .= "_ect={$this->ect}&";
-        $url .= "nCdEmpresa={$this->nCdEmpresa}&";
-        $url .= "sDsSenha={$this->sDsSenha}&";
+        $url = self::WS . '?';
+        $url .= "_ect=".self::WS."&";
+        $url .= "nCdEmpresa={$this->codigoEmpresa}&";
+        $url .= "sDsSenha={$this->senhaEmpresa}&";
         $url .= "nCdServico={$this->nCdServico}&";
-        $url .= "sCepOrigem={$this->cep_origin}&";
-        $url .= "sCepDestino={$this->cep_destino}&";
-        $url .= "nVlPeso={$this->nVlPeso}&";
-        $url .= "nCdFormato={$this->nCdFormato}&";
-        $url .= "nVlComprimento={$this->nVlComprimento}&";
-        $url .= "nVlAltura={$this->nVlAltura}&";
-        $url .= "nVlLargura={$this->nVlLargura}&";
-        $url .= "nVlDiametro={$this->nVlDiametro}&";
+        $url .= "sCepOrigem={$this->enderecoOrigem->getCep()}&";
+        $url .= "sCepDestino={$this->enderecoDestino->getCep()}&";
+        $url .= "nVlPeso={$this->pacote->getPeso()}&";
+        $url .= "nCdFormato={$this->pacote->getCodigoFormato()}&";
+        $url .= "nVlComprimento={$this->pacote->getComprimento()}&";
+        $url .= "nVlAltura={$this->pacote->getAltura()}&";
+        $url .= "nVlLargura={$this->pacote->getLargura()}&";
+        $url .= "nVlDiametro={$this->pacote->getDiametro()}&";
         $url .= "sCdMaoPropria={$this->sCdMaoPropria}&";
         $url .= "nVlValorDeclarado={$this->nVlValorDeclarado}&";
         $url .= "sCdAvisoRecebimento={$this->sCdAvisoRecebimento}&";
         $url .= "StrRetorno={$this->StrRetorno}&";
+        var_dump($url);
+        exit();
         return $url;
     }
 
