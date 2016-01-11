@@ -1,5 +1,5 @@
 <?php
-namespace GoCorreios;
+namespace PHPCorreios;
 
 class Frete
 {

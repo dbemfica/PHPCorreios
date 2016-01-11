@@ -1,5 +1,5 @@
 <?php
-require_once "../GoCorreios/Frete.php";
+require_once "../PHPCorreios/Frete.php";
 
 $frete = new \GoCorreios\Frete;
 $frete->setNCdServico(41106);
