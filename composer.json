@@ -1,0 +1,21 @@
+{
+  "name": "PHPCorreios",
+  "description": "API para acesso aos Web Service dos Correios",
+  "license": "GNU",
+  "authors": [
+    {
+      "name": "Diogo Bemfica",
+      "email": "diogo.fragabemfica@gmail.com"
+    }
+  ],
+  "minimum-stability": "dev",
+  "require": {
+    "php": ">=5.3.0",
+    "ext-curl": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "PHPCorreios": "src/PHPCorreios/"
+    }
+  }
+}
