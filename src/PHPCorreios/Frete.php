@@ -11,6 +11,7 @@ class Frete
     */
     private $codigoEmpresa;
     private $senhaEmpresa;
+    private $codigoServico;
     private $enderecoOrigem;
     private $enderecoDestino;
     private $pacote;
@@ -64,13 +65,12 @@ class Frete
      * 81019 e-SEDEX, com contrato
      * 41068 PAC com contrato
      */
-    public function setNCdServico($nCdServico)
+    public function setCodigoServico($codigoServico)
     {
-        $nCdServico = trim($nCdServico);
-
+        $codigoServico = trim($codigoServico);
         $array = array(41106,40010,40045,40215,40290,40096,40436,40444,81019,41068);
-        if( in_array($nCdServico, $array) ){
-            $this->nCdServico = (int)$nCdServico;
+        if( in_array($codigoServico, $array) ){
+            $this->codigoServico = (int)$codigoServico;
         }else{
             trigger_error("O Código de seriviço não é um dos valores validos", E_USER_ERROR);
         }
@@ -145,6 +145,11 @@ class Frete
     {
         $msgErro = trim($msgErro);
         $this->msgErro = (string)$msgErro;
+    }
+    
+    public function setNVlValorDeclarado($nVlValorDeclarado)
+    {
+        $this->nVlValorDeclarado = (float)$nVlValorDeclarado;
     }
 
     /**
@@ -268,7 +273,7 @@ class Frete
         $url .= "_ect=".self::WS."&";
         $url .= "nCdEmpresa={$this->codigoEmpresa}&";
         $url .= "sDsSenha={$this->senhaEmpresa}&";
-        $url .= "nCdServico={$this->nCdServico}&";
+        $url .= "nCdServico={$this->codigoServico}&";
         $url .= "sCepOrigem={$this->enderecoOrigem->getCep()}&";
         $url .= "sCepDestino={$this->enderecoDestino->getCep()}&";
         $url .= "nVlPeso={$this->pacote->getPeso()}&";
@@ -277,12 +282,10 @@ class Frete
         $url .= "nVlAltura={$this->pacote->getAltura()}&";
         $url .= "nVlLargura={$this->pacote->getLargura()}&";
         $url .= "nVlDiametro={$this->pacote->getDiametro()}&";
-        $url .= "sCdMaoPropria={$this->sCdMaoPropria}&";
-        $url .= "nVlValorDeclarado={$this->nVlValorDeclarado}&";
-        $url .= "sCdAvisoRecebimento={$this->sCdAvisoRecebimento}&";
+        $url .= "sCdMaoPropria={$this->pacote->getMaoPropria()}&";
+        $url .= "nVlValorDeclarado={$this->pacote->getValorDeclarado()}&";
+        $url .= "sCdAvisoRecebimento={$this->pacote->getAvisoRecebimento()}&";
         $url .= "StrRetorno={$this->StrRetorno}&";
-        var_dump($url);
-        exit();
         return $url;
     }
 
