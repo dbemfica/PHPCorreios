@@ -11,20 +11,8 @@ class Frete
     /**
     * Parametros para calcular o Frete
     */
-    private $nCdEmpresa;
-    private $sDsSenha;
-    private $nCdServico;
-    private $sCepOrigem;
-    private $sCepDestino;
-    private $nVlPeso;
-    private $nCdFormato;
-    private $nVlComprimento;
-    private $nVlAltura;
-    private $nVlLargura;
-    private $nVlDiametro = "";
-    private $sCdMaoPropria = "N";
-    private $nVlValorDeclarado = 0;
-    private $sCdAvisoRecebimento = "N";
+    private $cep_origin;
+    private $cep_destino;
 
 
     /**
@@ -85,32 +73,6 @@ class Frete
         }else{
             trigger_error("O Código de seriviço não é um dos valores validos", E_USER_ERROR);
         }
-    }
-
-    /**
-    * @param string $sCepOrigem
-    * CEP de Origem
-    */
-    public function setSCepOrigem($sCepOrigem)
-    {
-        $sCepOrigem = str_replace("-","",$sCepOrigem);
-        if( strlen($sCepOrigem) != 8 ){
-            trigger_error("O CEP informado é invalido", E_USER_ERROR);
-        }
-        $this->sCepOrigem = $sCepOrigem;
-    }
-
-    /**
-    * @param string $sCepDestino
-    * CEP de Destino
-    */
-    public function setSCepDestino($sCepDestino)
-    {
-        $sCepDestino = str_replace("-","",$sCepDestino);
-        if( strlen($sCepDestino) != 8 ){
-            trigger_error("O CEP informado é invalido", E_USER_ERROR);
-        }
-        $this->sCepDestino = $sCepDestino;
     }
 
     /**
@@ -384,6 +346,17 @@ class Frete
         return $this->msgErro;
     }
 
+
+    public function addEnderecoOrigin(\PHPCorreios\Endereco $endereco)
+    {
+        $this->cep_origin = $endereco->getCep();
+    }
+
+    public function addEnderecoDestino(\PHPCorreios\Endereco $endereco)
+    {
+        $this->cep_destino = $endereco->getCep();
+    }
+
     /**
     * Monta a URL de Consulta para enviar ao webservice dos correios
     * @return string
@@ -395,8 +368,8 @@ class Frete
         $url .= "nCdEmpresa={$this->nCdEmpresa}&";
         $url .= "sDsSenha={$this->sDsSenha}&";
         $url .= "nCdServico={$this->nCdServico}&";
-        $url .= "sCepOrigem={$this->sCepOrigem}&";
-        $url .= "sCepDestino={$this->sCepDestino}&";
+        $url .= "sCepOrigem={$this->cep_origin}&";
+        $url .= "sCepDestino={$this->cep_destino}&";
         $url .= "nVlPeso={$this->nVlPeso}&";
         $url .= "nCdFormato={$this->nCdFormato}&";
         $url .= "nVlComprimento={$this->nVlComprimento}&";

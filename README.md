@@ -7,6 +7,10 @@ Objetivo
 -----
 Esta classe faz a comunicação com o webservice dos correios para cálculo de frete por SEDEX e PAC
 
+Observação
+-----
+Estou trabalhando uma nova versão, onde muita coisa vai mudar. Mas para quem quiser pode baixar a release 0.1.1 que o sistema para calcular o frete está funcionando normalmente.
+
 Dependências
 -------
 * [Apache](http://httpd.apache.org/) / [Nginx](http://nginx.org/)
