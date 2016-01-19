@@ -1,5 +1,5 @@
 {
-  "name": "PHPCorreios",
+  "name": "dbemfca/php-correios",
   "description": "API para acesso aos Web Service dos Correios",
   "license": "GNU",
   "authors": [
